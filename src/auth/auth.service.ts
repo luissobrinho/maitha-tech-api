@@ -7,7 +7,6 @@ import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from '../users/dto/create-user.dto';
-import { ConfigService } from '@nestjs/config';
 import { TokenDto } from './dto/token.dto';
 
 @Injectable()
@@ -15,7 +14,6 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
   ) {}
 
   async signIn(email: string, pass: string): Promise<TokenDto> {
@@ -31,29 +29,21 @@ export class AuthService {
       throw new UnauthorizedException('Credenciais inválidas.');
     }
 
-    const payload = { sub: user._id, email: user.email };
+    const payload = { _id: user._id, email: user.email, name: user.email };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
   }
 
   async signUp(createUserDto: CreateUserDto): Promise<TokenDto> {
-    const { password, ...newUser } = createUserDto;
-
-    const existingUser = await this.usersService.findByEmail(newUser.email);
+    const existingUser = await this.usersService.findByEmail(
+      createUserDto.email,
+    );
     if (existingUser) {
       throw new ConflictException('E-mail já está em uso.');
     }
 
-    const hashedPassword = await bcrypt.hash(
-      password,
-      +this.configService.get('app.salt'),
-    );
-
-    const user = await this.usersService.create({
-      ...newUser,
-      password: hashedPassword,
-    });
+    const user = await this.usersService.create(null, createUserDto);
 
     const payload = { sub: user._id, email: user.email };
 

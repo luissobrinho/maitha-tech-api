@@ -22,6 +22,7 @@ import {
 import { SWAGGER_USER_TAG } from '../configs/swagger.config';
 import { UserDto } from './dto/user.dto';
 import { TransformInterceptor } from '../interceptors/transform-interceptor/transform.interceptor';
+import { User } from '../decorators/user.decorator';
 
 @Controller('users')
 @ApiTags(SWAGGER_USER_TAG)
@@ -38,8 +39,8 @@ export class UsersController {
     description: 'The user has been successfully created',
     type: UserDto,
   })
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  create(@User() user: UserDto, @Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(user, createUserDto);
   }
 
   @Get()
@@ -50,8 +51,8 @@ export class UsersController {
     description: 'Returns all users',
     type: [UserDto],
   })
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@User() user: UserDto) {
+    return this.usersService.findAll(user);
   }
 
   @Get(':id')
@@ -63,8 +64,8 @@ export class UsersController {
     description: 'Returns the user with the specified ID',
     type: UserDto,
   })
-  findOne(@Param('id') id: string) {
-    return this.usersService.findById(id);
+  findOne(@User() user: UserDto, @Param('id') id: string) {
+    return this.usersService.findById(user, id);
   }
 
   @Patch(':id')
@@ -77,8 +78,12 @@ export class UsersController {
     description: 'The user has been successfully updated',
     type: UserDto,
   })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+  update(
+    @User() user: UserDto,
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.usersService.update(user, id, updateUserDto);
   }
 
   @Delete(':id')
@@ -90,7 +95,7 @@ export class UsersController {
     description: 'The user has been successfully deleted',
     type: UserDto,
   })
-  remove(@Param('id') id: string) {
-    return this.usersService.delete(id);
+  remove(@User() user: UserDto, @Param('id') id: string) {
+    return this.usersService.delete(user, id);
   }
 }
