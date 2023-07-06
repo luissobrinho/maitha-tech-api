@@ -1,8 +1,11 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiCreatedResponse,
   ApiOkResponse,
+  ApiOperation,
+  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
@@ -20,7 +23,11 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('sign-in')
   @Public()
-  @ApiOkResponse({
+  @ApiOperation({ summary: 'Sign in to the application' })
+  @ApiBody({ type: SignInDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Sign in successful',
     type: TokenDto,
   })
   signIn(@Body() signInDto: SignInDto) {
@@ -29,7 +36,11 @@ export class AuthController {
 
   @Post('sign-up')
   @Public()
-  @ApiCreatedResponse({
+  @ApiOperation({ summary: 'Sign up for a new account' })
+  @ApiBody({ type: CreateUserDto })
+  @ApiResponse({
+    status: 201,
+    description: 'Account created successfully',
     type: TokenDto,
   })
   async signUp(@Body() createUserDto: CreateUserDto) {
@@ -39,9 +50,12 @@ export class AuthController {
   @Post('sign-out')
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({
+  @ApiResponse({
+    status: 200,
+    description: 'Sign out successful',
     type: TokenDto,
   })
+  @ApiOperation({ summary: 'Sign out from the application' })
   signOut() {
     return this.authService.signOut();
   }
