@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule } from '@nestjs/swagger';
-import expressBasicAuth from 'express-basic-auth';
+import * as basicAuth from 'express-basic-auth';
 import * as fs from 'fs';
 import { swagger } from './configs/swagger.config';
 
@@ -32,7 +32,7 @@ async function bootstrap() {
 
   app.use(
     ['/api/docs', '/api/swagger-docs'],
-    expressBasicAuth({
+    basicAuth({
       challenge: true,
       users: {
         [swagger_user]: swagger_password,
