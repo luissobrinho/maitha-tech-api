@@ -31,7 +31,7 @@ e uma interface amigável e intuitiva para a melhor experiência do usuário.
 
 ## Executando o Projeto
 
-1. Inicie o servidor do backend: `npm run start:dev`
+1. Inicie o servidor do backend: `yanr run start:dev`
 
 ## Contato
 
