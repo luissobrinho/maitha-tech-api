@@ -26,7 +26,19 @@ export class UserRepository {
   }
 
   async findById(user: UserDto, id: string): Promise<UserDocument> {
-    return this.userModel.findOne({ _id: id, userId: user._id }).exec();
+    return this.userModel
+      .findOne({
+        $and: [
+          { _id: id },
+          {
+            userId: user._id,
+          },
+          {
+            userId: { $exists: true },
+          },
+        ],
+      })
+      .exec();
   }
 
   async findByEmail(email: string): Promise<UserDocument> {

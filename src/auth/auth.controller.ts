@@ -14,6 +14,7 @@ import { Public } from '../decorators/is-piblic.decorator';
 import { SWAGGER_AUTH_TAG } from '../configs/swagger.config';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { TokenDto } from './dto/token.dto';
+import { SignUpDto } from './dto/sign-up.dto';
 
 @Controller('auth')
 @ApiTags(SWAGGER_AUTH_TAG)
@@ -43,8 +44,8 @@ export class AuthController {
     description: 'Account created successfully',
     type: TokenDto,
   })
-  async signUp(@Body() createUserDto: CreateUserDto) {
-    return await this.authService.signUp(createUserDto);
+  async signUp(@Body() signUpDto: SignUpDto) {
+    return await this.authService.signUp(signUpDto);
   }
 
   @Post('sign-out')
